@@ -409,16 +409,6 @@ AFRAME.registerComponent("ik-controller", {
         leftArm,
         leftForeArm
       );
-      // this.updateIk(
-      //   HAND_ROTATIONS.left,
-      //   leftHand,
-      //   leftController.object3D,
-      //   true,
-      //   this.isInView,
-      //   leftShoulder,
-      //   leftArm,
-      //   leftForeArm
-      // );
     } else if (leftHand) {
       this.updateHand(HAND_ROTATIONS.left, leftHand, leftController.object3D, true, this.isInView);
     }
@@ -433,16 +423,6 @@ AFRAME.registerComponent("ik-controller", {
         rightArm,
         rightForeArm
       );
-      // this.updateIk(
-      //   HAND_ROTATIONS.right,
-      //   rightHand,
-      //   rightController.object3D,
-      //   false,
-      //   this.isInView,
-      //   rightShoulder,
-      //   rightArm,
-      //   rightForeArm
-      // );
     } else if (rightHand) {
       this.updateHand(HAND_ROTATIONS.right, rightHand, rightController.object3D, false, this.isInView);
     }
@@ -483,76 +463,6 @@ AFRAME.registerComponent("ik-controller", {
     }
   },
   // vrdevel modified start
-  updateIk(
-    handRotation,
-    handObject3D,
-    controllerObject3D,
-    isLeft,
-    isInView,
-    shoulderObject3D,
-    armObject3D,
-    foreArmObject3D
-  ) {
-    const handPosition = new THREE.Vector3();
-    handObject3D.getWorldPosition(handPosition);
-    const foreArmPosition = new THREE.Vector3();
-    foreArmObject3D.getWorldPosition(foreArmPosition);
-    const armPosition = new THREE.Vector3();
-    armObject3D.getWorldPosition(armPosition);
-    const shoulderPosition = new THREE.Vector3();
-    shoulderObject3D.getWorldPosition(shoulderPosition);
-    const controllerPosition = new THREE.Vector3();
-    controllerObject3D.getWorldPosition(controllerPosition);
-    if (isLeft) {
-      const distance = armPosition.distanceTo(controllerPosition);
-      let middleTarget = new THREE.Vector3();
-      if (distance >= this.leftArmLength) {
-        middleTarget = controllerPosition;
-      } else {
-        const forward = new THREE.Vector3();
-        controllerObject3D.getWorldDirection(forward);
-        forward.normalize();
-        forward.multiplyScalar(-this.leftHandToForeArm);
-        middleTarget.subVectors(controllerPosition, forward);
-
-        // const belowVector = new THREE.Vector3(0, -1, 0);
-        // belowVector.multiplyScalar(this.leftForeArmToArm);
-        // middleTarget.addVectors(armPosition, belowVector);
-      }
-
-      armObject3D.lookAt(middleTarget);
-      armObject3D.rotateX(Math.PI / 2);
-      foreArmObject3D.lookAt(controllerPosition);
-      foreArmObject3D.rotateX(Math.PI / 2);
-
-      // handObject3D.rotation = controllerObject3D.rotation;
-      // foreArmObject3D.rotateOnAxis(foreArmObject3D.up, -controllerObject3D.rotation.z - Math.PI / 2);
-      // TODO modify hand rotation
-      // handObject3D.rotation.x = controllerObject3D.rotation.y;
-      // handObject3D.rotation.y = controllerObject3D.rotation.z - Math.PI / 2;
-      // handObject3D.rotation.z = controllerObject3D.rotation.x - Math.PI / 2;
-    } else {
-      const distance = armPosition.distanceTo(controllerPosition);
-      let middleTarget = new THREE.Vector3();
-      if (distance >= this.rightArmLength) {
-        middleTarget = controllerPosition;
-      } else {
-        const forward = new THREE.Vector3();
-        controllerObject3D.getWorldDirection(forward);
-        forward.normalize();
-        forward.multiplyScalar(-this.rightHandToForeArm);
-        middleTarget.subVectors(controllerPosition, forward);
-      }
-
-      armObject3D.lookAt(middleTarget);
-      armObject3D.rotateX(Math.PI / 2);
-      foreArmObject3D.lookAt(controllerPosition);
-      foreArmObject3D.rotateX(Math.PI / 2);
-    }
-    armObject3D.matrixNeedsUpdate = true;
-    foreArmObject3D.matrixNeedsUpdate = true;
-    handObject3D.matrixNeedsUpdate = true;
-  },
   updateArm(
     handRotation,
     handObject3D,
